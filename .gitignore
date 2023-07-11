@@ -1,6 +1,14 @@
 # NET folders
-\bin
-\obj
+bin
+obj
 
 # VS Code
-\.vscode
+.vscode
+
+# NPM
+NpmJS/node_modules
+NpmJS/package-lock.json
+
+# Generated
+wwwroot/assets
+wwwroot/js/*index.bundle.js*
