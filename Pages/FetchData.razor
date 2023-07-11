@@ -13,27 +13,12 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <kol-table 
+        _caption="Weather data"
+        _headers="{'horizontal': [[{'label':'Date','key':'DateText'}, {'label':'Temp. (C)','key':'TemperatureC'}, {'label':'Temp. (F)','key':'TemperatureF'}, {'label':'Summary','key':'Summary'}]]}"
+        _pagination="[{'page':2}]"
+        _data="@System.Text.Json.JsonSerializer.Serialize(forecasts)">
+    </kol-table>
 }
 
 @code {
@@ -47,6 +32,8 @@ else
     public class WeatherForecast
     {
         public DateTime Date { get; set; }
+
+        public string DateText => Date.ToString("d");
 
         public int TemperatureC { get; set; }
 
