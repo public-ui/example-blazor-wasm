@@ -1,39 +1,92 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorWasmKoliBriApp</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
+﻿@inject NavigationManager NavigationManager
+
+@using System.Text.Json
+@using System.Text.Json.Serialization
+
+<div class="top-row ps-3 navbar navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="">Blazor Wasm with KoliBri</a>
+    <button
+      title="Navigation menu"
+      class="navbar-toggler"
+    @onclick="ToggleNavMenu"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
+  <kol-nav
+    _label="BlazorWasmKoliBriApp"
+    _links="@JsonSerializer.Serialize(navLinks)"
+  ></kol-nav>
 </div>
 
 @code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
+  private List<NavLink> navLinks = new() {
+    new NavLink() {    
+      Href = "/",
+      Icon = "codicon codicon-home",
+      Label = "Home"
+    },
+    new NavLink() {    
+      Href = "counter",
+      Icon = "codicon codicon-plus",
+      Label = "Counter"
+    },
+    new NavLink() {    
+      Href = "fetchdata",
+      Icon = "codicon codicon-list-rich",
+      Label = "Fetch data"
     }
-}
+  };
+
+  private bool collapseNavMenu = true; 
+  
+  private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null; 
+  
+  private void ToggleNavMenu()
+  {
+    collapseNavMenu = !collapseNavMenu;
+  }
+
+  protected override void OnInitialized()
+  {
+    NavigationManager.LocationChanged += OnLocationChanged;
+    UpdateActiveState();
+  }
+
+  public void Dispose()
+  {
+    NavigationManager.LocationChanged -= OnLocationChanged;
+  }
+  private void OnLocationChanged(object? sender, LocationChangedEventArgs args) 
+  {
+    UpdateActiveState();
+    StateHasChanged();
+  }
+
+  private void UpdateActiveState()
+  {
+    foreach (var item in navLinks)
+    {
+      item.Active = NavigationManager.Uri.EndsWith(item.Href);
+    }
+  }
+
+  public class NavLink 
+  {
+    [JsonPropertyName("_href")]
+    public string Href { get; init; }
+
+    [JsonPropertyName("_icon")]
+    public string Icon { get; init; }
+
+    [JsonPropertyName("_label")]
+    public string Label { get; init; }
+
+    [JsonPropertyName("_active")]
+    public bool Active { get; set; }
+  }
+} 
