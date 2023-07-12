@@ -9,12 +9,14 @@
 <kol-button
   _label="Click me"
   _variant="primary"
-@onclick="IncrementCount"
+  @onclick="IncrementCount"
 ></kol-button>
 
 @code {
-    private int currentCount = 0; private void IncrementCount()
-    {
-        currentCount++;
-    }
+  private int currentCount = 0;
+  
+  private void IncrementCount()
+  {
+    currentCount++;
+  }
 } 
