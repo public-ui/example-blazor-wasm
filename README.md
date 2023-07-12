@@ -1,5 +1,17 @@
 # .NET Blazor WebAssembly with KoliBri
 
+## Requirements
+
+- Node.js (https://nodejs.org/de/download)
+- .NET SDK 6 or above (https://dotnet.microsoft.com/en-us/download/visual-studio-sdks)
+
+## Execute
+
+To run the example app you only need to start the project using dotnet: `dotnet run .` 
+If you want to watch for changes start the project using `dotnet watch --project . --verbose`.
+
+Finally the app is hosted on `https://localhost:7201` and `http://localhost:5171`.
+
 ## New project
 
 The following steps describe how to create a new Blazor project integrating KoliBri as the preferred component library.
@@ -166,6 +178,8 @@ To automatically install and build the NPM project before launching the Blazor p
   </Target>
 </Project>
 ```
+
+This is not recommended during continuous development because the npm install and build steps would be called before each rebuild.
 
 ### Source control
 
