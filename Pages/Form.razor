@@ -1,0 +1,79 @@
+﻿@page "/form"
+
+<PageTitle>Form Example</PageTitle>
+
+<h1>Form example</h1>
+
+<EditForm Model="@model" OnValidSubmit="HandleSubmit">
+    <h2>Form</h2>
+    <kol-input-text _value="@model.FirstName" @onchange="@((ChangeEventArgs __e) => model.FirstName = __e?.Value?.ToString())">First name</kol-input-text>
+    <kol-button _type="submit" _label="Submit"></kol-button>
+    <kol-button _type="button" _label="Reset" @onclick="Reset"></kol-button>
+</EditForm>
+
+<div>
+    <h2>User data</h2>
+    <p>
+        First name:
+        <span>@user.FirstName</span>
+    </p>
+</div>
+
+@code 
+{
+    private UserModel model = new();
+
+    private User user = new()
+    {
+        FirstName = "Max",
+        LastName = "Mustermann",
+        DateOfBirth = DateTime.Today.AddYears(30)
+    };
+
+    protected async override Task OnInitializedAsync()
+    {
+        MapUserToModel();
+    }
+
+    private void HandleSubmit()
+    {
+        user.FirstName = model.FirstName;
+        user.LastName = model.LastName;
+        if (model.DateOfBirth != null && DateTime.TryParse(model.DateOfBirth, out var date))
+        {
+            user.DateOfBirth = date;
+        }
+        StateHasChanged();
+    }
+
+    private void MapUserToModel()
+    {
+        model.FirstName = user.FirstName;
+        model.LastName = user.LastName;
+        model.DateOfBirth = user.DateOfBirth.ToString("yyyy-MM-dd");
+    }
+
+    private void Reset()
+    {
+        MapUserToModel();
+        StateHasChanged();
+    }
+
+    public class User 
+    {
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public DateTime DateOfBirth { get; set; }        
+    }
+
+    public class UserModel 
+    {
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string DateOfBirth { get; set; }
+    }
+}
